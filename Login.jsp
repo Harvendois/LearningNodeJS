@@ -1,5 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+
+<%
+
+%>	
+	
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -31,24 +36,62 @@
 		<fieldset class="form-group border p-3">
 			<legend class="w-auto px-3">웹 스토리지를 이용한 아이디 저장</legend>
 			​<span style="color: red; font-weight: bold">
-			<!-- 여기에 아이디/비번 불일치시 에러 메시지 출력 -->
+			<%=request.getAttribute("mismatchError")==null?"":request.getAttribute("mismatchError") %>
 			</span>
-			<form class="form-inline" method="post" action="Process.jsp">
+			<form class="form-inline" method="post" action="Process.jsp" onsubmit="login(event)">
 				<label>아이디</label>
-    			<input  type="text" name="id" class="form-control mx-2"/>    			
+    			<input  type="text" name="id" class="form-control mx-2" value="<%=request.getParameter("id")==null?"":request.getParameter("id")%>"/>    			
     			<label>비밀번호</label>
-    			<input type="password" name="pwd" class="form-control mx-2"  />
+    			<input type="password" name="pwd" class="form-control mx-2" value="<%=request.getParameter("pwd")==null?"":request.getParameter("pwd")%>" />
     			<div class="custom-control custom-checkbox">
 					<input type="checkbox" class="custom-control-input" name="id-save" value="Y" id="id-save" />
 					<label class="custom-control-label" for="id-save" checked>아이디 저장</label>
 				</div>
-    			<input type="submit" class="btn btn-danger mx-2" value="로그인"/>
+    			<input type="submit" class="btn btn-danger mx-2" value="로그인" />
 			</form>
 			<hr/>
 			<!-- 아래 버튼 클릭시 Logout.jsp로 이동. 로그아웃 처리 -->
-			​<input type="button" value="로그아웃" class="btn btn-danger"/>
+			​<input type="button" value="로그아웃" class="btn btn-danger" onclick="logout()" style="display:none"/>
 		</div><!--container-->
-		
+		<script>
+            //var idSave = document.querySelector("#id-save");
+            var id = document.querySelector("input[name='id']");
+			var pwd = document.querySelector("input[name='pwd']");
+            var span = document.querySelector("span");
+			var form = document.querySelector("form");
+			var logoutBtn = document.querySelector("input[type='button']");
+			var idSave = document.querySelector("#id-save");
+
+			function login(e){
+				if(id.value===""){
+					e.preventDefault();
+					alert('아이디 입력')
+					id.focus();
+					return;
+				}
+				if(pwd.value===""){
+					e.preventDefault();
+					alert('비밀번호 입력')
+					pwd.focus();
+					return;
+				}
+			};
+			
+			
+			
+			window.addEventListener('DOMContentLoaded',function(){
+				console.log('hi');
+				form.style.display = "<%=session.getAttribute("loginForm") %>";
+				logoutBtn.style.display = "<%=session.getAttribute("logoutBtn")%>";
+				if(idSave.checked===true){
+					sessionStorage.setItem("username","<%=request.getParameter("id")%>);
+				}
+			})
+			
+			function logout(){
+                location.href="Logout.jsp";
+            }
+		</script>
 	
 </body>
 </html>
